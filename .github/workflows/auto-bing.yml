@@ -1,0 +1,40 @@
+on:
+    workflow_dispatch:
+    schedule:
+      - cron: "0 1 * * *"
+    push:
+      branches: [ gh-pages ]
+    pull_request:
+      branches: [ gh-pages ]
+
+jobs:
+    build:
+      runs-on: ubuntu-latest
+      steps:
+      # checkout
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # setup nodejs
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check Node.js version
+        run: node -v
+      # clone gitee repo
+      - name: Clone Gitee repo
+        run: git clone https://gitee.com/yourusername/yourrepo.git
+      # run bing.js
+      - name: Run bing.js
+        run: node ./yourrepo/assets/js/bing.js
+      # commit and push changes to gitee repo
+      - name: Commit and push changes
+        run: |
+          cd yourrepo
+          git config --global user.name "Your Name"
+          git config --global user.email "youremail@example.com"
+          git add .
+          git commit -m "Update bing images"
+          git push
